@@ -1,6 +1,10 @@
+const jwt = require('jsonwebtoken');
 const User = require('../models').User;
 
-const createCookieFromToken = (user, statusCode, req, res) => {};
+const createCookieFromToken = (user, statusCode, req, res) => {
+
+  const jwt = 
+};
 
 exports.signup = async (req, res, next) => {
   try {
