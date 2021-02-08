@@ -46,9 +46,9 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: true,
           is: {
-            args: [/"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$"/i],
-            msg:
-              'Password must be at least at characters long and include 1 uppercase letter, 1 lowercase letter and 1 number',
+            args: /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]{6,}$/g,
+            // msg:
+            //   'Password must be at least at characters long and include 1 uppercase letter, 1 lowercase letter and 1 number',
           },
         },
       },
