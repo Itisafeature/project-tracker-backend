@@ -64,6 +64,14 @@ module.exports = (sequelize, DataTypes) => {
           user.password = hashedPassword;
         },
       },
+      defaultScope: {
+        attributes: { exclude: ['password'] },
+      },
+      scopes: {
+        withPassord: {
+          attributes: {},
+        },
+      },
     }
   );
   return User;
