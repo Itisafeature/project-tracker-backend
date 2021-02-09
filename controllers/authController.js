@@ -3,7 +3,7 @@ const User = require('../models').User;
 
 const createCookieFromToken = (user, statusCode, req, res) => {
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: '10d',
+    expiresIn: '1d',
   });
 
   const cookieOptions = {
@@ -25,6 +25,7 @@ const createCookieFromToken = (user, statusCode, req, res) => {
 
 exports.signup = async (req, res, next) => {
   console.log(req.body);
+
   try {
     const user = await User.create(req.body);
     createCookieFromToken(user, 201, req, res);
