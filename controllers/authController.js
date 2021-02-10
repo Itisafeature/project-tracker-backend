@@ -2,8 +2,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models').User;
 
 const createCookieFromToken = (user, statusCode, req, res) => {
+  const expiration = Date.now() + 10 * 24 * 60 * 60 * 1000;
   const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
-    expiresIn: '1d',
+    expiresIn: expiration,
   });
 
   const cookieOptions = {
@@ -17,6 +18,7 @@ const createCookieFromToken = (user, statusCode, req, res) => {
   res.status(statusCode).json({
     status: 'success',
     token,
+    expiration,
     data: {
       user,
     },
@@ -24,9 +26,11 @@ const createCookieFromToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = async (req, res, next) => {
-  console.log(req.body);
   try {
     const user = await User.create(req.body);
+    delete user.dataValues.password;
+    console.log(user);
+
     createCookieFromToken(user, 201, req, res);
   } catch (err) {
     next(err);
@@ -34,7 +38,14 @@ exports.signup = async (req, res, next) => {
   }
 };
 
-exports.login = async (req, res, next) => {};
+exports.login = async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { email: req.body.email } });
+    createCookieFromToken(user, 200, req, res);
+  } catch (err) {
+    next(err);
+  }
+};
 
 exports.logout = async (req, res, next) => {
   res.cookie('jwt', 'loggedout', {
