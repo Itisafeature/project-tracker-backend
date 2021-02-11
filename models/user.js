@@ -47,31 +47,34 @@ module.exports = (sequelize, DataTypes) => {
           notNull: true,
           is: {
             args: /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]{6,}$/g,
-            // msg:
-            //   'Password must be at least at characters long and include 1 uppercase letter, 1 lowercase letter and 1 number',
+            msg:
+              'Password must be at least at characters long and include 1 uppercase letter, 1 lowercase letter and 1 number',
           },
         },
       },
     },
+    // {
+    //   hooks: {
+    //     beforeCreate: async (user, options) => {
+    //       console.log('here');
+    //       const hashedPassword = await bcrypt.hash(user.password, 10);
+    //       user.password = hashedPassword;
+    //     },
+    //   },
+    // },
+    // {
+    //   defaultScope: {
+    //     attributes: { exclude: ['password'] },
+    //   },
+    //   scopes: {
+    //     withPassord: {
+    //       attributes: {},
+    //     },
+    //   },
+    // },
     {
       sequelize,
       modelName: 'User',
-    },
-    {
-      hooks: {
-        beforeCreate: async (user, options) => {
-          const hashedPassword = await bcrypt.hash(user.password, 10);
-          user.password = hashedPassword;
-        },
-      },
-      defaultScope: {
-        attributes: { exclude: ['password'] },
-      },
-      scopes: {
-        withPassord: {
-          attributes: {},
-        },
-      },
     }
   );
   return User;

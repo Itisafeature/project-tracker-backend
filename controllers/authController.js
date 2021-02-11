@@ -27,9 +27,12 @@ const createCookieFromToken = (user, statusCode, req, res) => {
 
 exports.signup = async (req, res, next) => {
   try {
+    console.log(req.body);
     const user = await User.create(req.body);
+    // console.log(await User.findAll());
+    console.log(user.password);
     delete user.dataValues.password;
-    console.log(user);
+    // console.log(user);
 
     createCookieFromToken(user, 201, req, res);
   } catch (err) {
