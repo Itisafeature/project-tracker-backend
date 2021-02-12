@@ -53,29 +53,14 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     },
-    // {
-    //   hooks: {
-    //     beforeCreate: async (user, options) => {
-    //       console.log('here');
-    //       const hashedPassword = await bcrypt.hash(user.password, 10);
-    //       user.password = hashedPassword;
-    //     },
-    //   },
-    // },
-    // {
-    //   defaultScope: {
-    //     attributes: { exclude: ['password'] },
-    //   },
-    //   scopes: {
-    //     withPassord: {
-    //       attributes: {},
-    //     },
-    //   },
-    // },
     {
       sequelize,
       modelName: 'User',
     }
   );
+  User.addHook('beforeCreate', async (user, options) => {
+    const hashedPassword = await bcrypt.hash(user.password, 10);
+    user.password = hashedPassword;
+  });
   return User;
 };
