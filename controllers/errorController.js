@@ -7,6 +7,11 @@ const handleValidationError = err => {
   return new AppError(message, 400);
 };
 
+const handleJsonTokenError = err => {
+  const message = `Unauthorized. Please login again`;
+  return new AppError(message, 401);
+};
+
 const sendError = (err, req, res) => {
   return res.status(err.statusCode).json({
     status: err.status,
@@ -21,9 +26,10 @@ module.exports = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;
 
-  console.log(err);
   if (err.name === 'SequelizeValidationError') {
-    error = handleValidationError(error);
+    error = handleValidationError(err);
+  } else if (err.name === 'JsonWebTokenError') {
+    error = handleJsonTokenError(err);
   }
   sendError(error, req, res);
 };

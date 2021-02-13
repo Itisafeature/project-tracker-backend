@@ -1,3 +1,4 @@
+const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models').User;
 
@@ -39,6 +40,7 @@ exports.signup = async (req, res, next) => {
 exports.login = async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { email: req.body.email } });
+    const compare = await bcrypt.compare(user.password, req.body.password);
     createCookieFromToken(user, 200, req, res);
   } catch (err) {
     next(err);
@@ -51,4 +53,22 @@ exports.logout = async (req, res, next) => {
     httpOnly: true,
   });
   res.status(200).json({ status: 'success' });
+};
+
+exports.protect = async (req, res, next) => {
+  console.log(req.cookies.jwt.expiration);
+  try {
+    const token = req.cookies.jwt;
+    const decodedToken = await promisify(jwt.verify)(
+      token,
+      process.env.JWT_SECRET
+    );
+
+    const user = await User.findByPk(decodedToken.id);
+    if (!token || !user) {
+      next(err);
+    }
+  } catch (err) {
+    next(err);
+  }
 };
