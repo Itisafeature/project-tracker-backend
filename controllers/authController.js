@@ -56,7 +56,6 @@ exports.logout = async (req, res, next) => {
 };
 
 exports.protect = async (req, res, next) => {
-  console.log(req.cookies.jwt.expiration);
   try {
     const token = req.cookies.jwt;
     const decodedToken = await promisify(jwt.verify)(
