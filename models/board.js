@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'userId',
         onDelete: 'CASCADE',
       });
+
+      Board.hasMany(models.Item, {
+        foreignKey: 'boardId',
+      });
     }
   }
   Board.init(
@@ -24,5 +28,11 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'Board',
     }
   );
+
+  Board.addScope('defaultScope', {
+    attributes: {
+      exclude: ['id'],
+    },
+  });
   return Board;
 };

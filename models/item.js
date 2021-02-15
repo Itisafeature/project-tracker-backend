@@ -30,6 +30,14 @@ module.exports = (sequelize, DataTypes) => {
           notNull: true,
         },
       },
+      status: {
+        type: DataTypes.ENUM,
+        allowNull: false,
+        values: ['Icebox', 'Not Started', 'In-Progress', 'Completed'],
+        validate: {
+          notNull: true,
+        },
+      },
     },
     {
       sequelize,

@@ -27,6 +27,7 @@ const createCookieFromToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = async (req, res, next) => {
+  console.log('here');
   try {
     const user = await User.create(req.body);
     delete user.dataValues.password;
@@ -64,10 +65,14 @@ exports.protect = async (req, res, next) => {
     );
 
     const user = await User.findByPk(decodedToken.id);
+
     if (!token || !user) {
       next(err);
     }
+
+    req.user = user;
   } catch (err) {
     next(err);
   }
+  next();
 };
