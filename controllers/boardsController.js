@@ -22,7 +22,10 @@ exports.getBoard = async (req, res, next) => {
       where: { name: req.params.boardName },
       include: [Item],
     });
-    console.log(board);
+    res.status(200).json({
+      status: 'success',
+      board,
+    });
   } catch (err) {
     next(err);
   }
@@ -30,16 +33,19 @@ exports.getBoard = async (req, res, next) => {
 
 exports.createBoard = async (req, res, next) => {
   try {
+    console.log(req.body.board.items);
     const board = await Board.create(
       {
         name: req.body.board.name,
         userId: req.user.id,
-        items: req.body.items,
+        items: [req.body.board.items],
       },
       {
-        include: [Item],
+        include: [{ model: Item }],
       }
     );
+
+    console.log(board);
 
     delete board.dataValues.id;
     delete board.dataValues.userId;
@@ -48,6 +54,7 @@ exports.createBoard = async (req, res, next) => {
       board,
     });
   } catch (err) {
+    console.log(err);
     next(err);
   }
 };
