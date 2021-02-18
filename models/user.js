@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      User.hasMany(models.Board, {
+      User.hasMany(models.board, {
         foreignKey: 'userId',
         as: 'boards',
       });
@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'User',
+      modelName: 'user',
     }
   );
   User.addHook('beforeCreate', async (user, options) => {

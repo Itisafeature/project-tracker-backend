@@ -20,6 +20,10 @@ module.exports = {
           'Completed'
         ),
       },
+      notes: {
+        allowNull: true,
+        type: Sequelize.STRING,
+      },
       boardId: {
         allowNull: false,
         type: Sequelize.INTEGER,

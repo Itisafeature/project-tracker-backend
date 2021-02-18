@@ -8,12 +8,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Board.belongsTo(models.User, {
+      Board.belongsTo(models.user, {
         foreignKey: 'userId',
         onDelete: 'CASCADE',
       });
 
-      Board.hasMany(models.Item, {
+      Board.hasMany(models.item, {
         foreignKey: 'boardId',
       });
     }
@@ -25,13 +25,13 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Board',
+      modelName: 'board',
     }
   );
 
   Board.addScope('defaultScope', {
     attributes: {
-      exclude: ['id'],
+      exclude: ['id', 'userId'],
     },
   });
   return Board;

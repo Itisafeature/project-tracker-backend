@@ -1,6 +1,6 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const User = require('../models').User;
+const User = require('../models').user;
 
 const createCookieFromToken = (user, statusCode, req, res) => {
   const expiration = Date.now() + 10 * 24 * 60 * 60 * 1000;
@@ -27,7 +27,7 @@ const createCookieFromToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = async (req, res, next) => {
-  console.log('here');
+  console.log(User);
   try {
     const user = await User.create(req.body);
     delete user.dataValues.password;

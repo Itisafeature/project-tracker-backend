@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Item.belongsTo(models.Board, {
+      Item.belongsTo(models.board, {
         foreignKey: 'boardId',
         onDelete: 'CASCADE',
       });
@@ -41,8 +41,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: 'Item',
+      modelName: 'item',
     }
   );
+
+  Item.addScope('defaultScope', {
+    attributes: {
+      exclude: ['id', 'boardId'],
+    },
+  });
+
   return Item;
 };
