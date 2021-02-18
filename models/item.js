@@ -30,6 +30,9 @@ module.exports = (sequelize, DataTypes) => {
           notNull: true,
         },
       },
+      notes: {
+        type: DataTypes.STRING,
+      },
       status: {
         type: DataTypes.ENUM,
         allowNull: false,
