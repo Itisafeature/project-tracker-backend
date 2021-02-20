@@ -20,6 +20,8 @@ exports.getBoard = async (req, res, next) => {
       where: { name: req.params.boardName, userId: req.user.id },
       include: [Item],
     });
+
+    console.log(board.dataValues.items);
     if (board) {
       res.status(200).json({
         status: 'success',

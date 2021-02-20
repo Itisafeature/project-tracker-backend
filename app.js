@@ -7,6 +7,7 @@ const logger = require('morgan');
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const boardRouter = require('./routes/board');
+const itemRouter = require('./routes/item');
 const GlobalErrorHandler = require('./controllers/errorController');
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', authRouter);
 app.use('/boards', boardRouter);
+app.use('/items', itemRouter);
 app.use(GlobalErrorHandler);
 
 module.exports = app;
