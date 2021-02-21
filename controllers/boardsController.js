@@ -18,14 +18,17 @@ exports.getBoard = async (req, res, next) => {
   try {
     const board = await Board.findOne({
       where: { name: req.params.boardName, userId: req.user.id },
-      include: [Item],
+      attributes: ['id', 'name'],
     });
-
-    console.log(board.dataValues.items);
+    const items = await board.getItems({
+      attributes: ['name', 'status', 'notes'],
+    });
+    delete board.dataValues.id;
     if (board) {
       res.status(200).json({
         status: 'success',
         board,
+        items,
       });
     } else {
       res.status(404).json({
@@ -68,11 +71,11 @@ exports.createBoard = async (req, res, next) => {
     delete board.dataValues.id;
     delete board.dataValues.userId;
 
-    for (let i = 0; i < board.items.length; i++) {
-      delete board.items[i].dataValues.id;
-      delete board.items[i].dataValues.boardId;
-    }
-
+    if (board.item)
+      for (let i = 0; i < board.items.length; i++) {
+        delete board.items[i].dataValues.id;
+        delete board.items[i].dataValues.boardId;
+      }
     res.status(201).json({
       status: 'success',
       board,

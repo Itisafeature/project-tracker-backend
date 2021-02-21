@@ -48,11 +48,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Item.addScope('defaultScope', {
-    attributes: {
-      exclude: ['id', 'boardId'],
-    },
-  });
+  // Item.addScope('defaultScope', {
+  //   attributes: {
+  //     exclude: ['id', 'boardId'],
+  //   },
+  // });
 
   return Item;
 };
