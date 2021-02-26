@@ -20,6 +20,9 @@ module.exports = {
           'Completed'
         ),
       },
+      orderIndex: {
+        type: Sequelize.INTEGER,
+      },
       notes: {
         type: Sequelize.STRING,
       },
