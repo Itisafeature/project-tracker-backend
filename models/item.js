@@ -77,40 +77,35 @@ module.exports = (sequelize, DataTypes) => {
   // });
 
   Item.addHook('beforeCreate', async (item, options) => {
-    // const board = await item.getBoard({
-    //   include: {
-    //     model: Item,
-    //     as: 'items',
-    //     attributes: ['orderIndex'],
-    //     where: {
-    //       status: item.status,
-    //     },
-    //     order: [['orderIndex', 'DESC']],
-    //     limit: 1,
-    //   },
-    // });
+    let board;
+    const statusOptions = ['Icebox', 'Not Started', 'In-Progress', 'Completed'];
+    const endIndex = statusOptions.findIndex(status => status === item.status);
+    const slicedOptions = statusOptions.slice(0, endIndex + 1).reverse();
 
-    const board = await item.getBoardWithItems();
-    console.log(board);
+    for (let i = 0; i < slicedOptions.length; i++) {
+      if (board === undefined || board.items.length === 0) {
+        board = await item.getBoardWithItems(slicedOptions[i]);
+      }
+    }
 
-    let previousStatus = item.status;
-    // while (!board.items[0] || prevStatus === 'Icebox') {
-    //   prevStatus =
-    //     item.status === 'Completed'
-    //       ? 'In-Progress'
-    //       : item.status === 'In-Progress'
-    //       ? 'Not Started'
-    //       : item.status === 'Not Started'
-    //       ? 'Icebox'
-    //       : null;
-    // }
+    item.orderIndex =
+      board.items.length > 0 ? board.items[0].dataValues.orderIndex + 1 : 1;
+
+    const items = await board.getItems({
+      where: {
+        orderIndex: {
+          [Op.gte]: item.orderIndex,
+        },
+      },
+      attributes: ['id', 'orderIndex'],
+    });
+
+    for (let i = 0; i < items.length; i++) {
+      const laterItem = items[i];
+      console.log;
+      laterItem.update({ orderIndex: laterItem.orderIndex + 1 });
+    }
   });
-
-  // Item.addScope('defaultScope', {
-  //   attributes: {
-  //     exclude: ['id', 'boardId'],
-  //   },
-  // });
 
   return Item;
 };
