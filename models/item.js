@@ -102,7 +102,6 @@ module.exports = (sequelize, DataTypes) => {
 
     for (let i = 0; i < items.length; i++) {
       const laterItem = items[i];
-      console.log;
       laterItem.update({ orderIndex: laterItem.orderIndex + 1 });
     }
   });
