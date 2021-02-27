@@ -1,5 +1,6 @@
 'use strict';
 const { Model } = require('sequelize');
+const item = require('./item');
 module.exports = (sequelize, DataTypes) => {
   class Board extends Model {
     /**
@@ -28,6 +29,25 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'board',
     }
   );
+
+  Board.addHook('afterCreate', async (board, options) => {
+    const order = {
+      Icebox: 1,
+      'Not Started': 2,
+      'In-Progress': 3,
+      Completed: 4,
+    };
+    const sortedItems = board.items.sort((item1, item2) => {
+      if (item1.status === item2.status) {
+        return item1.id - item2.id;
+      }
+      return order[item1.status] - order[item2.status];
+    });
+
+    for (let i = 0; i < sortedItems.length; i++) {
+      await sortedItems[i].update({ orderIndex: i + 1 });
+    }
+  });
 
   Board.addScope('defaultScope', {
     attributes: {
