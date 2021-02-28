@@ -52,14 +52,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
-  Item.prototype.getBoardWithItems = async function () {
+  Item.prototype.getBoardWithItems = async function (status) {
     return this.getBoard({
       include: {
         model: Item,
         as: 'items',
         attributes: ['orderIndex'],
         where: {
-          status: this.status,
+          status: status,
         },
         order: [['orderIndex', 'DESC']],
         limit: 1,
@@ -85,11 +85,14 @@ module.exports = (sequelize, DataTypes) => {
     const slicedOptions = statusOptions.slice(0, endIndex + 1).reverse();
 
     console.log(slicedOptions);
+
     for (let i = 0; i < slicedOptions.length; i++) {
       if (board === undefined || board.items.length === 0) {
         board = await item.getBoardWithItems(slicedOptions[i]);
       }
     }
+
+    console.log(board);
 
     item.orderIndex =
       board.items.length > 0 ? board.items[0].dataValues.orderIndex + 1 : 1;
