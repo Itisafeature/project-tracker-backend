@@ -67,15 +67,6 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  // Item.addScope('getBoardWithItems', {
-  //   include: {
-  //     model: Board
-  //   }
-  //   attributes: {
-  //     exclude: ['id', 'userId'],
-  //   },
-  // });
-
   Item.addHook('beforeCreate', async (item, options) => {
     if (options.parentRecord) return;
 
@@ -92,10 +83,8 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
 
-    console.log(board);
-
     item.orderIndex =
-      board.items.length > 0 ? board.items[0].dataValues.orderIndex + 1 : 1;
+      board.items.length > 0 ? board.items[0].dataValues.orderIndex + 1 : 0;
 
     const items = await board.getItems({
       where: {
