@@ -45,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     for (let i = 0; i < sortedItems.length; i++) {
-      await sortedItems[i].update({ orderIndex: i + 1 });
+      await sortedItems[i].update({ orderIndex: i });
     }
   });
 

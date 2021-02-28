@@ -69,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Item.addHook('beforeCreate', async (item, options) => {
     if (options.parentRecord) return;
-
+    console.log('here');
     let board;
     const statusOptions = ['Icebox', 'Not Started', 'In-Progress', 'Completed'];
     const endIndex = statusOptions.findIndex(status => status === item.status);

@@ -4,6 +4,7 @@ const User = require('../models').user;
 const { Op } = require('sequelize');
 
 exports.updatePositions = async (req, res, next) => {
+  console.log(req.body);
   try {
     const board = await Board.findOne({
       where: { name: req.body.boardName, userId: req.user.id },
@@ -11,9 +12,13 @@ exports.updatePositions = async (req, res, next) => {
     });
 
     const item = await Item.findOne({
-      boardId: board.id,
-      orderIndex: req.body.sourceIndex,
+      where: {
+        boardId: board.id,
+        orderIndex: req.body.sourceIndex,
+      },
     });
+
+    // fix for inverse
 
     const itemsToUpdate = await board.getItems({
       where: {
@@ -24,10 +29,10 @@ exports.updatePositions = async (req, res, next) => {
       },
       attributes: ['id', 'orderIndex'],
     });
-    console.log(item);
+
     await item.update({
       orderIndex: req.body.destinationIndex,
-      status: req.body.destinationStatus,
+      status: req.body.destinationStatus.replace('_', ' '),
     });
 
     for (let i = 0; i < itemsToUpdate.length; i++) {

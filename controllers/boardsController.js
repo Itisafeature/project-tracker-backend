@@ -21,7 +21,7 @@ exports.getBoard = async (req, res, next) => {
       attributes: ['id', 'name'],
     });
     const items = await board.getItems({
-      attributes: ['name', 'status', 'notes'],
+      attributes: ['name', 'status', 'notes', 'orderIndex'],
     });
     delete board.dataValues.id;
     if (board) {
