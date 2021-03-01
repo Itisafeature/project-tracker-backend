@@ -14,31 +14,70 @@ exports.updatePositions = async (req, res, next) => {
     const item = await Item.findOne({
       where: {
         boardId: board.id,
-        orderIndex: req.body.sourceIndex,
+        orderIndex: req.body.sourceItemOrderIndex,
       },
     });
+
+    const endItem = await Item.findOne({
+      where: {
+        boardId: board.id,
+        orderIndex: req.body.destinationItemOrderIndex,
+      },
+    });
+
+    const endItemForIndex = Object.assign({}, endItem);
 
     // fix for inverse
 
-    const itemsToUpdate = await board.getItems({
-      where: {
-        orderIndex: {
-          [Op.gt]: req.body.sourceIndex,
-          [Op.lte]: req.body.destinationIndex,
+    let itemsToUpdate;
+    if (
+      item.dataValues.orderIndex < endItem.dataValues.orderIndex &&
+      item.dataValues.orderIndex - endItem.dataValues.orderIndex === -1
+    ) {
+      itemsToUpdate = await board.getItems({
+        where: {
+          orderIndex: {
+            [Op.gt]: req.body.sourceItemOrderIndex,
+            [Op.lte]: req.body.destinationItemOrderIndex,
+          },
         },
-      },
-      attributes: ['id', 'orderIndex'],
-    });
-
-    await item.update({
-      orderIndex: req.body.destinationIndex,
-      status: req.body.destinationStatus.replace('_', ' '),
-    });
-
-    for (let i = 0; i < itemsToUpdate.length; i++) {
-      await itemsToUpdate[i].update({
-        orderIndex: itemsToUpdate[i].orderIndex - 1,
+        attributes: ['id', 'orderIndex'],
       });
+
+      await item.update({
+        orderIndex: endItemForIndex.dataValues.orderIndex,
+        status: req.body.destinationStatus,
+      });
+
+      for (let i = 0; i < itemsToUpdate.length; i++) {
+        await itemsToUpdate[i].update({
+          orderIndex: itemsToUpdate[i].dataValues.orderIndex - 1,
+        });
+      }
+    } else if (
+      item.dataValues.orderIndex < endItem.dataValues.orderIndex &&
+      item.dataValues.orderIndex - endItem.dataValues.orderIndex === 1
+    ) {
+      itemsToUpdate = await board.getItems({
+        where: {
+          orderIndex: {
+            [Op.gt]: req.body.sourceItemOrderIndex,
+            [Op.lte]: req.body.destinationItemOrderIndex,
+          },
+        },
+        attributes: ['id', 'orderIndex'],
+      });
+
+      await item.update({
+        orderIndex: endItemForIndex.dataValues.orderIndex,
+        status: req.body.destinationStatus,
+      });
+
+      for (let i = 0; i < itemsToUpdate.length; i++) {
+        await itemsToUpdate[i].update({
+          orderIndex: itemsToUpdate[i].dataValues.orderIndex + 1,
+        });
+      }
     }
   } catch (err) {
     console.log(err);
