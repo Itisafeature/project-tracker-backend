@@ -55,14 +55,14 @@ exports.updatePositions = async (req, res, next) => {
         });
       }
     } else if (
-      item.dataValues.orderIndex < endItem.dataValues.orderIndex &&
+      item.dataValues.orderIndex > endItem.dataValues.orderIndex &&
       item.dataValues.orderIndex - endItem.dataValues.orderIndex === 1
     ) {
       itemsToUpdate = await board.getItems({
         where: {
           orderIndex: {
-            [Op.gt]: req.body.sourceItemOrderIndex,
-            [Op.lte]: req.body.destinationItemOrderIndex,
+            [Op.gte]: req.body.destinationItemOrderIndex,
+            [Op.lt]: req.body.sourceItemOrderIndex,
           },
         },
         attributes: ['id', 'orderIndex'],
@@ -76,6 +76,29 @@ exports.updatePositions = async (req, res, next) => {
       for (let i = 0; i < itemsToUpdate.length; i++) {
         await itemsToUpdate[i].update({
           orderIndex: itemsToUpdate[i].dataValues.orderIndex + 1,
+        });
+      }
+    } else if (item.dataValues.orderIndex < endItem.dataValues.orderIndex) {
+      itemsToUpdate = await board.getItems({
+        where: {
+          orderIndex: {
+            [Op.gt]: req.body.sourceItemOrderIndex,
+            [Op.lte]: req.body.destinationItemOrderIndex,
+          },
+        },
+        attributes: ['id', 'orderIndex'],
+      });
+
+      console.log(req.body);
+
+      await item.update({
+        orderIndex: endItemForIndex.dataValues.orderIndex,
+        status: req.body.destinationStatus,
+      });
+
+      for (let i = 0; i < itemsToUpdate.length; i++) {
+        await itemsToUpdate[i].update({
+          orderIndex: itemsToUpdate[i].dataValues.orderIndex - 1,
         });
       }
     }
