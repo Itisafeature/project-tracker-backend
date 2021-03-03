@@ -25,23 +25,15 @@ exports.updatePositions = async (req, res, next) => {
       },
     });
 
-    const endItemForIndex = Object.assign({}, endItem);
-
-    // fix for inverse
-
-    let itemsToUpdate;
     if (
-      item.dataValues.orderIndex < endItem.dataValues.orderIndex &&
+      item.dataValues.orderIndex - endItem.dataValues.orderIndex === 1 ||
       item.dataValues.orderIndex - endItem.dataValues.orderIndex === -1
     ) {
-      itemsToUpdate = await board.getItems({
-        where: {
-          orderIndex: {
-            [Op.gt]: req.body.sourceItemOrderIndex,
-            [Op.lte]: req.body.destinationItemOrderIndex,
-          },
-        },
-        attributes: ['id', 'orderIndex'],
+      const startItemForIndex = Item.build({
+        orderIndex: item.dataValues.orderIndex,
+      });
+      const endItemForIndex = Item.build({
+        orderIndex: endItem.dataValues.orderIndex,
       });
 
       await item.update({
@@ -49,62 +41,92 @@ exports.updatePositions = async (req, res, next) => {
         status: req.body.destinationStatus,
       });
 
-      for (let i = 0; i < itemsToUpdate.length; i++) {
-        await itemsToUpdate[i].update({
-          orderIndex: itemsToUpdate[i].dataValues.orderIndex - 1,
-        });
-      }
-    } else if (
-      item.dataValues.orderIndex > endItem.dataValues.orderIndex &&
-      item.dataValues.orderIndex - endItem.dataValues.orderIndex === 1
-    ) {
-      itemsToUpdate = await board.getItems({
-        where: {
-          orderIndex: {
-            [Op.gte]: req.body.destinationItemOrderIndex,
-            [Op.lt]: req.body.sourceItemOrderIndex,
-          },
-        },
-        attributes: ['id', 'orderIndex'],
+      await endItem.update({
+        orderIndex: startItemForIndex.dataValues.orderIndex,
       });
-
-      await item.update({
-        orderIndex: endItemForIndex.dataValues.orderIndex,
-        status: req.body.destinationStatus,
-      });
-
-      for (let i = 0; i < itemsToUpdate.length; i++) {
-        await itemsToUpdate[i].update({
-          orderIndex: itemsToUpdate[i].dataValues.orderIndex + 1,
-        });
-      }
-    } else if (item.dataValues.orderIndex < endItem.dataValues.orderIndex) {
-      itemsToUpdate = await board.getItems({
-        where: {
-          orderIndex: {
-            [Op.gt]: req.body.sourceItemOrderIndex,
-            [Op.lte]: req.body.destinationItemOrderIndex,
-          },
-        },
-        attributes: ['id', 'orderIndex'],
-      });
-
-      console.log(req.body);
-
-      await item.update({
-        orderIndex: endItemForIndex.dataValues.orderIndex,
-        status: req.body.destinationStatus,
-      });
-
-      for (let i = 0; i < itemsToUpdate.length; i++) {
-        await itemsToUpdate[i].update({
-          orderIndex: itemsToUpdate[i].dataValues.orderIndex - 1,
-        });
-      }
     }
   } catch (err) {
     console.log(err);
   }
+
+  // fix for inverse
+
+  let itemsToUpdate;
+  //   if (
+  //     item.dataValues.orderIndex < endItem.dataValues.orderIndex &&
+  //     item.dataValues.orderIndex - endItem.dataValues.orderIndex === -1
+  //   ) {
+  //     itemsToUpdate = await board.getItems({
+  //       where: {
+  //         orderIndex: {
+  //           [Op.gt]: req.body.sourceItemOrderIndex,
+  //           [Op.lte]: req.body.destinationItemOrderIndex,
+  //         },
+  //       },
+  //       attributes: ['id', 'orderIndex'],
+  //     });
+
+  //     await item.update({
+  //       orderIndex: endItemForIndex.dataValues.orderIndex,
+  //       status: req.body.destinationStatus,
+  //     });
+
+  //     for (let i = 0; i < itemsToUpdate.length; i++) {
+  //       await itemsToUpdate[i].update({
+  //         orderIndex: itemsToUpdate[i].dataValues.orderIndex - 1,
+  //       });
+  //     }
+  //   } else if (
+  //     item.dataValues.orderIndex > endItem.dataValues.orderIndex &&
+  //     item.dataValues.orderIndex - endItem.dataValues.orderIndex === 1
+  //   ) {
+  //     itemsToUpdate = await board.getItems({
+  //       where: {
+  //         orderIndex: {
+  //           [Op.gte]: req.body.destinationItemOrderIndex,
+  //           [Op.lt]: req.body.sourceItemOrderIndex,
+  //         },
+  //       },
+  //       attributes: ['id', 'orderIndex'],
+  //     });
+
+  //     await item.update({
+  //       orderIndex: endItemForIndex.dataValues.orderIndex,
+  //       status: req.body.destinationStatus,
+  //     });
+
+  //     for (let i = 0; i < itemsToUpdate.length; i++) {
+  //       await itemsToUpdate[i].update({
+  //         orderIndex: itemsToUpdate[i].dataValues.orderIndex + 1,
+  //       });
+  //     }
+  //   } else if (item.dataValues.orderIndex < endItem.dataValues.orderIndex) {
+  //     itemsToUpdate = await board.getItems({
+  //       where: {
+  //         orderIndex: {
+  //           [Op.gt]: req.body.sourceItemOrderIndex,
+  //           [Op.lte]: req.body.destinationItemOrderIndex,
+  //         },
+  //       },
+  //       attributes: ['id', 'orderIndex'],
+  //     });
+
+  //     console.log(req.body);
+
+  //     await item.update({
+  //       orderIndex: endItemForIndex.dataValues.orderIndex,
+  //       status: req.body.destinationStatus,
+  //     });
+
+  //     for (let i = 0; i < itemsToUpdate.length; i++) {
+  //       await itemsToUpdate[i].update({
+  //         orderIndex: itemsToUpdate[i].dataValues.orderIndex - 1,
+  //       });
+  //     }
+  //   }
+  // } catch (err) {
+  //   console.log(err);
+  // }
 };
 
 exports.createItem = async (req, res, next) => {
