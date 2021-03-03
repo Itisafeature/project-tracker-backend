@@ -44,6 +44,11 @@ exports.updatePositions = async (req, res, next) => {
       await endItem.update({
         orderIndex: startItemForIndex.dataValues.orderIndex,
       });
+
+      res.status(200).json({
+        status: 'success',
+        items: [item, endItem],
+      });
     }
   } catch (err) {
     console.log(err);
