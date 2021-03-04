@@ -49,6 +49,32 @@ exports.updatePositions = async (req, res, next) => {
         status: 'success',
         items: [item, endItem],
       });
+    } else if (item.dataValues.orderIndex < endItem.dataValues.orderIndex) {
+      const itemsToUpdate = await board.getItems({
+        where: {
+          orderIndex: {
+            [Op.gt]: item.dataValues.orderIndex,
+            [Op.lte]: endItem.dataValues.orderIndex,
+          },
+        },
+        attributes: ['id', 'orderIndex'],
+      });
+
+      for (let i = 0; i < itemsToUpdate.length; i++) {
+        await itemsToUpdate[i].update({
+          orderIndex: itemsToUpdate[i].dataValues.orderIndex - 1,
+        });
+      }
+
+      await item.update({
+        orderIndex: endItem.dataValues.orderIndex,
+        status: req.body.destinationStatus,
+      });
+
+      res.status(200).json({
+        status: 'success',
+        items: [item].concat(itemsToUpdate),
+      });
     }
   } catch (err) {
     console.log(err);
