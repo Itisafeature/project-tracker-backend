@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Item.hasMany(models.note, {
         foreignKey: 'itemId',
+        as: 'notes',
       });
     }
   }
