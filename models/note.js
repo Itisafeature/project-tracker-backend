@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     {
       content: {
         type: DataTypes.STRING,
+        allowNull: false,
         validate: {
           notNull: true,
           len: [10, 500],
@@ -30,22 +31,24 @@ module.exports = (sequelize, DataTypes) => {
       },
       userId: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         validate: {
           notNull: true,
         },
       },
       itemId: {
         type: DataTypes.INTEGER,
+        allowNull: false,
         validate: {
           notNull: true,
         },
       },
-      createdAt: Sequelize.DATE,
-      updatedAt: Sequelize.DATE,
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
     },
     {
       sequelize,
-      modelName: 'Note',
+      modelName: 'note',
     }
   );
   return Note;

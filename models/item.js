@@ -1,5 +1,6 @@
 'use strict';
 const { Model, Op } = require('sequelize');
+const note = require('./note');
 module.exports = (sequelize, DataTypes) => {
   class Item extends Model {
     /**
@@ -15,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
 
       Item.hasMany(models.note, {
         foreignKey: 'itemId',
-        as: 'notes',
       });
     }
   }
@@ -34,9 +34,6 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: true,
         },
-      },
-      notes: {
-        type: DataTypes.STRING,
       },
       status: {
         type: DataTypes.ENUM,

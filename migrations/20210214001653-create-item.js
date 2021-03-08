@@ -23,9 +23,6 @@ module.exports = {
       orderIndex: {
         type: Sequelize.INTEGER,
       },
-      notes: {
-        type: Sequelize.STRING,
-      },
       boardId: {
         allowNull: false,
         type: Sequelize.INTEGER,

@@ -10,72 +10,24 @@ exports.updatePositions = async (req, res, next) => {
       where: { name: req.body.boardName, userId: req.user.id },
       attributes: ['id'],
     });
+    const { items } = req.body;
 
-    const item = await Item.findOne({
-      where: {
-        boardId: board.id,
-        orderIndex: req.body.sourceItemOrderIndex,
-      },
-    });
-
-    const endItem = await Item.findOne({
-      where: {
-        boardId: board.id,
-        orderIndex: req.body.destinationItemOrderIndex,
-      },
-    });
-
-    if (
-      item.dataValues.orderIndex - endItem.dataValues.orderIndex === 1 ||
-      item.dataValues.orderIndex - endItem.dataValues.orderIndex === -1
-    ) {
-      const startItemForIndex = Item.build({
-        orderIndex: item.dataValues.orderIndex,
-      });
-      const endItemForIndex = Item.build({
-        orderIndex: endItem.dataValues.orderIndex,
-      });
-
-      await item.update({
-        orderIndex: endItemForIndex.dataValues.orderIndex,
-        status: req.body.destinationStatus,
-      });
-
-      await endItem.update({
-        orderIndex: startItemForIndex.dataValues.orderIndex,
-      });
-
-      res.status(200).json({
-        status: 'success',
-        items: [item, endItem],
-      });
-    } else if (item.dataValues.orderIndex < endItem.dataValues.orderIndex) {
-      const itemsToUpdate = await board.getItems({
+    for (let i = 0; i < items.length; i++) {
+      const item = await Item.findOne({
         where: {
-          orderIndex: {
-            [Op.gt]: item.dataValues.orderIndex,
-            [Op.lte]: endItem.dataValues.orderIndex,
-          },
+          name: items[i].name,
+          boardId: board.id,
         },
-        attributes: ['id', 'orderIndex'],
       });
-
-      for (let i = 0; i < itemsToUpdate.length; i++) {
-        await itemsToUpdate[i].update({
-          orderIndex: itemsToUpdate[i].dataValues.orderIndex - 1,
-        });
-      }
-
       await item.update({
-        orderIndex: endItem.dataValues.orderIndex,
-        status: req.body.destinationStatus,
-      });
-
-      res.status(200).json({
-        status: 'success',
-        items: [item].concat(itemsToUpdate),
+        status: items[i].status,
+        orderIndex: items[i].orderIndex,
       });
     }
+
+    res.status(200).json({
+      status: 'success',
+    });
   } catch (err) {
     console.log(err);
   }
