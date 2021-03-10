@@ -1,6 +1,7 @@
 const Board = require('../models').board;
 const Item = require('../models').item;
 const User = require('../models').user;
+const Note = require('../models').note;
 
 exports.getBoards = async (req, res, next) => {
   try {
@@ -46,6 +47,7 @@ exports.createBoard = async (req, res, next) => {
     let board;
     if (req.body.items) {
       const ItemAssociation = Board.hasMany(Item);
+      const NoteAssociation = Item.hasMany(Note);
       board = await Board.create(
         {
           name: req.body.board.name,
@@ -57,6 +59,10 @@ exports.createBoard = async (req, res, next) => {
             {
               association: ItemAssociation,
               attributes: { exclude: ['id', 'boardId'] },
+              include: {
+                association: NoteAssociation,
+                attributes: { exclude: ['id', 'itemId', 'userId'] },
+              },
             },
           ],
         }
@@ -70,12 +76,11 @@ exports.createBoard = async (req, res, next) => {
 
     delete board.dataValues.id;
     delete board.dataValues.userId;
-
-    if (board.item)
-      for (let i = 0; i < board.items.length; i++) {
-        delete board.items[i].dataValues.id;
-        delete board.items[i].dataValues.boardId;
-      }
+    //   if (board.item)
+    //     for (let i = 0; i < board.items.length; i++) {
+    //       delete board.items[i].dataValues.id;
+    //       delete board.items[i].dataValues.boardId;
+    //     }
     res.status(201).json({
       status: 'success',
       board,

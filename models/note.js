@@ -23,11 +23,6 @@ module.exports = (sequelize, DataTypes) => {
     {
       content: {
         type: DataTypes.STRING,
-        allowNull: false,
-        validate: {
-          notNull: true,
-          len: [10, 500],
-        },
       },
       userId: {
         type: DataTypes.INTEGER,
@@ -51,5 +46,16 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'note',
     }
   );
+
+  Note.addHook('beforeValidate', async (note, options) => {
+    const board = await options.parentRecord.getBoard({
+      attributes: { include: ['userId'] },
+    });
+    note.userId = board.dataValues.userId;
+  });
+
+  Note.addHook('afterSave', async (note, options) => {
+    if (note.content === '') await note.destroy();
+  });
   return Note;
 };
