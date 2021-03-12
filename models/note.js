@@ -47,6 +47,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  Note.addScope('defaultScope', {
+    attributes: ['content', 'createdAt'],
+  });
+
   Note.addHook('beforeValidate', async (note, options) => {
     const board = await options.parentRecord.getBoard({
       attributes: { include: ['userId'] },

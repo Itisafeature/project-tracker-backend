@@ -1,6 +1,6 @@
 'use strict';
 const { Model, Op } = require('sequelize');
-const note = require('./note');
+const Note = require('./note').note;
 module.exports = (sequelize, DataTypes) => {
   class Item extends Model {
     /**
@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Item.hasMany(models.note, {
         foreignKey: 'itemId',
+        as: 'notes',
       });
     }
   }
@@ -53,6 +54,11 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'item',
     }
   );
+
+  Item.addScope('defaultScope', {
+    attributes: ['name', 'status', 'orderIndex', 'createdAt', 'updatedAt'],
+    include: 'notes',
+  });
 
   Item.prototype.getBoardWithItems = async function (status) {
     return this.getBoard({

@@ -1,7 +1,25 @@
 const Board = require('../models').board;
 const Item = require('../models').item;
 const User = require('../models').user;
+const Note = require('../models').note;
+
 const { Op } = require('sequelize');
+
+// TEST ROUTE
+// exports.getItem = async (req, res, next) => {
+//   try {
+//     const NoteAssociation = Item.hasMany(Note);
+//     const item = await Item.findOne({
+//       where: { id: req.params.id },
+//     });
+
+//     res.status(200).json({
+//       item,
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
 exports.updatePositions = async (req, res, next) => {
   console.log(req.body);

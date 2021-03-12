@@ -3,6 +3,7 @@ const itemsController = require('../controllers/itemsController');
 const authController = require('../controllers/authController');
 const router = express.Router();
 
+// router.get('/:id', itemsController.getItem); TEST ROUTE
 router.post('/', authController.protect, itemsController.createItem);
 router.patch(
   '/updatePositions',

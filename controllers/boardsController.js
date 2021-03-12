@@ -22,19 +22,7 @@ exports.getBoard = async (req, res, next) => {
       attributes: ['id', 'name'],
     });
 
-    const NoteAssociation = Item.hasMany(Note);
-    const items = await board.getItems({
-      attributes: ['name', 'status', 'notes', 'orderIndex'],
-      include: {
-        association: NoteAssociation,
-      },
-    });
-
-    // console.log(await Note.findAll({}));
-
-    console.log(items[0].notes);
-    console.log(items[1].notes);
-    console.log(items[2].notes);
+    const items = await board.getItems({});
 
     delete board.dataValues.id;
     if (board) {
