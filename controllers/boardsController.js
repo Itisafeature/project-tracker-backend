@@ -19,17 +19,13 @@ exports.getBoard = async (req, res, next) => {
   try {
     const board = await Board.findOne({
       where: { name: req.params.boardName, userId: req.user.id },
-      attributes: ['id', 'name'],
+      attributes: ['name'],
     });
 
-    const items = await board.getItems({});
-
-    delete board.dataValues.id;
     if (board) {
       res.status(200).json({
         status: 'success',
         board,
-        items,
       });
     } else {
       res.status(404).json({

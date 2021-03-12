@@ -48,7 +48,7 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Note.addScope('defaultScope', {
-    attributes: ['content', 'createdAt'],
+    attributes: ['id', 'content', 'createdAt'],
   });
 
   Note.addHook('beforeValidate', async (note, options) => {

@@ -1,6 +1,5 @@
 'use strict';
 const { Model } = require('sequelize');
-const item = require('./item');
 module.exports = (sequelize, DataTypes) => {
   class Board extends Model {
     /**
@@ -16,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
 
       Board.hasMany(models.item, {
         foreignKey: 'boardId',
+        as: 'items',
       });
     }
   }
@@ -29,6 +29,13 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'board',
     }
   );
+
+  Board.addScope('defaultScope', {
+    attributes: {
+      exclude: ['id', 'userId'],
+    },
+    include: 'items',
+  });
 
   Board.addHook('afterCreate', async (board, options) => {
     const order = {
@@ -49,10 +56,5 @@ module.exports = (sequelize, DataTypes) => {
     }
   });
 
-  Board.addScope('defaultScope', {
-    attributes: {
-      exclude: ['id', 'userId'],
-    },
-  });
   return Board;
 };

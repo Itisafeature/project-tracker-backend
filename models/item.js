@@ -56,7 +56,14 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Item.addScope('defaultScope', {
-    attributes: ['name', 'status', 'orderIndex', 'createdAt', 'updatedAt'],
+    attributes: [
+      'id',
+      'name',
+      'status',
+      'orderIndex',
+      'createdAt',
+      'updatedAt',
+    ],
     include: 'notes',
   });
 
