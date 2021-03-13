@@ -52,10 +52,12 @@ module.exports = (sequelize, DataTypes) => {
   });
 
   Note.addHook('beforeValidate', async (note, options) => {
-    const board = await options.parentRecord.getBoard({
-      attributes: { include: ['userId'] },
-    });
-    note.userId = board.dataValues.userId;
+    if (options.parentRecord) {
+      const board = await options.parentRecord.getBoard({
+        attributes: { include: ['userId'] },
+      });
+      note.userId = board.dataValues.userId;
+    }
   });
 
   Note.addHook('afterSave', async (note, options) => {
