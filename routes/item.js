@@ -12,6 +12,6 @@ router.patch(
   itemsController.updatePositions
 );
 
-router.use('/:itemName', notesRouter);
+router.use('/:itemName/notes', notesRouter);
 
 module.exports = router;
