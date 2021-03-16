@@ -14,6 +14,7 @@ export const getNotes = async (req, res, next) => {
     });
     const notes = await Note.findAll({
       where: { userId: req.user.id, itemId: board.items[0].id },
+      order: [['createdAt', 'DESC']],
     });
 
     res.status(200).json({

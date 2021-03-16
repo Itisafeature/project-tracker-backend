@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 const User = require('../models').User;
 const authController = require('../controllers/authController');
 const router = express.Router();
@@ -17,6 +18,6 @@ router.get('/users', getUsers);
 
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
-router.post('/signup', authController.signup);
+router.post('/signup', passport.authenticate('signup', { session: false }));
 // router.get('/auth', authController.protect);
 module.exports = router;
