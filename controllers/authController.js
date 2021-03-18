@@ -31,13 +31,7 @@ exports.signup = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  try {
-    const user = await User.findOne({ where: { email: req.body.email } });
-    const compare = await bcrypt.compare(user.password, req.body.password);
-    createCookieFromToken(user, 200, req, res);
-  } catch (err) {
-    next(err);
-  }
+  createCookieFromToken(req.user, 200, req, res);
 };
 
 exports.logout = async (req, res, next) => {

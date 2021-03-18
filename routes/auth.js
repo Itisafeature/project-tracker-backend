@@ -16,12 +16,18 @@ const getUsers = async (req, res, next) => {
 
 router.get('/users', getUsers);
 
-router.post('/login', authController.login);
-router.post('/logout', authController.logout);
+router.post(
+  '/login',
+  passport.authenticate('login', { session: false }),
+  authController.login
+);
+
 router.post(
   '/signup',
   passport.authenticate('signup', { session: false }),
   authController.signup
 );
+
+router.post('/logout', authController.logout);
 
 module.exports = router;
