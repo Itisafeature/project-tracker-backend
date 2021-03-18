@@ -26,7 +26,6 @@ module.exports = (sequelize, DataTypes) => {
       username: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
         validate: {
           isAlphanumeric: true,
           notNull: true,
@@ -34,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
             args: [4, 15],
             msg: 'Username must be between 4 and 15 characters',
           },
+        },
+        unique: {
+          args: 'username',
+          msg: 'Username is already taken',
         },
       },
       email: {
@@ -55,6 +58,10 @@ module.exports = (sequelize, DataTypes) => {
             msg:
               'Password must be at least at characters long and include 1 uppercase letter, 1 lowercase letter and 1 number',
           },
+        },
+        unique: {
+          args: 'email',
+          msg: 'Email is already taken',
         },
       },
     },

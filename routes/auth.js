@@ -18,6 +18,10 @@ router.get('/users', getUsers);
 
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
-router.post('/signup', passport.authenticate('signup', { session: false }));
-// router.get('/auth', authController.protect);
+router.post(
+  '/signup',
+  passport.authenticate('signup', { session: false }),
+  authController.signup
+);
+
 module.exports = router;
