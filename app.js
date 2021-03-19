@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const passport = require('passport');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
@@ -23,7 +24,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use('/', indexRouter);
 
 app.use('/', authRouter);
-app.use('/boards', boardRouter);
+app.use(
+  '/boards',
+  passport.authenticate('jwt', { session: false }),
+  boardRouter
+);
 app.use('/items', itemRouter);
 app.use('/notes', noteRouter);
 app.use(GlobalErrorHandler);

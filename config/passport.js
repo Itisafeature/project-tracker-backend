@@ -15,6 +15,7 @@ passport.use(
     },
     async (req, email, password, done) => {
       try {
+        console.log(password);
         const user = await User.create(req.body);
         return done(null, user);
       } catch (err) {
@@ -35,11 +36,13 @@ passport.use(
     async (req, email, password, done) => {
       try {
         const user = await User.findOne({ where: { email: req.body.email } });
-        const compare = await bcrypt.compare(user.password, req.body.password);
-
-        if (!user || !compare) {
+        if (!user)
           return done(new AppError('Invalid Username or Password', 401), false);
-        }
+        const compare = await bcrypt.compare(password, user.password);
+        if (!compare)
+          return done(new AppError('Invalid Username or Password', 401), false);
+
+        return done(null, user);
       } catch (err) {
         return done(err);
       }
@@ -47,32 +50,27 @@ passport.use(
   )
 );
 
-// const cookieExtractor = req => {
-//   const token = null;
-//   if (req && req.cookies) {
-//     token = req.cookies['jwt'];
-//   }
-//   return token;
-// };
+const cookieExtractor = req => {
+  let token = null;
+  if (req && req.cookies) {
+    token = req.cookies['jwt'];
+  }
+  return token;
+};
 
-// const opts = {
-//   jwtFromRequest: cookieExtractor(),
-//   secretOrKey: process.env.JWT_SECRET,
-// };
+const opts = {
+  jwtFromRequest: cookieExtractor,
+  secretOrKey: process.env.JWT_SECRET,
+};
 
-// passport.use(
-//   new JwtStrategy(opts, async (jwt_payload, done) => {
-//     console.log(jwt_payload);
-//   })
-// );
-
-// passport.use(new LocalStrategy({
-//     usernameField: 'email'
-//   },
-//   async (email, password) => {
-//     User.findOne({ email }, function(err, user) {
-//       if (err) return done(err);
-//       const authenticate = await bcrypt.comparePassword()
-//     })
-//   }
-// ))
+passport.use(
+  new JwtStrategy(opts, async (jwt_payload, done) => {
+    try {
+      const user = await User.findByPk(jwt_payload.id);
+      if (user) return done(null, user);
+    } catch (err) {
+      console.log(err);
+      return done(new AppError('Unauthorized Request', 401), false);
+    }
+  })
+);
