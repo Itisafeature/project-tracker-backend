@@ -4,11 +4,10 @@ const authController = require('../controllers/authController');
 const notesRouter = require('../routes/note');
 const router = express.Router();
 
-// router.get('/:id', itemsController.getItem); TEST ROUTE
-router.post('/', authController.protect, itemsController.createItem);
+router.post('/', itemsController.createItem);
 router.patch(
   '/updatePositions',
-  authController.protect,
+
   itemsController.updatePositions
 );
 

@@ -16,6 +16,12 @@ const getUsers = async (req, res, next) => {
 
 router.get('/users', getUsers);
 
+router.get(
+  '/auth',
+  passport.authenticate('jwt', { session: false }),
+  authController.protect
+);
+
 router.post(
   '/login',
   passport.authenticate('login', { session: false }),

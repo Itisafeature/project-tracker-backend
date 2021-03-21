@@ -38,6 +38,7 @@ passport.use(
         const user = await User.findOne({ where: { email: req.body.email } });
         if (!user)
           return done(new AppError('Invalid Username or Password', 401), false);
+
         const compare = await bcrypt.compare(password, user.password);
         if (!compare)
           return done(new AppError('Invalid Username or Password', 401), false);

@@ -6,7 +6,6 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 require('./config/passport.js');
 
-const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 const boardRouter = require('./routes/board');
 const itemRouter = require('./routes/item');
@@ -21,16 +20,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// app.use('/', indexRouter);
-
 app.use('/', authRouter);
 app.use(
   '/boards',
   passport.authenticate('jwt', { session: false }),
   boardRouter
 );
-app.use('/items', itemRouter);
-app.use('/notes', noteRouter);
+app.use('/items', passport.authenticate('jwt', { session: false }), itemRouter);
+app.use('/notes', passport.authenticate('jwt', { session: false }), noteRouter);
 app.use(GlobalErrorHandler);
 
 module.exports = app;

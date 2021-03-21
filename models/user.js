@@ -70,6 +70,11 @@ module.exports = (sequelize, DataTypes) => {
       modelName: 'user',
     }
   );
+
+  User.addScope('defaultScope', {
+    attributes: ['id', 'username', 'email', 'password'],
+  });
+
   User.addHook('beforeCreate', async (user, options) => {
     const hashedPassword = await bcrypt.hash(user.password, 10);
     user.password = hashedPassword;
