@@ -19,7 +19,7 @@ router.get('/users', getUsers);
 router.get(
   '/auth',
   passport.authenticate('jwt', { session: false }),
-  authController.protect
+  authController.returnUser
 );
 
 router.post(

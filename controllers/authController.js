@@ -24,9 +24,7 @@ const createCookieFromToken = (user, statusCode, req, res) => {
     status: 'success',
     token,
     expiration,
-    data: {
-      user,
-    },
+    user,
   });
 };
 
@@ -46,23 +44,12 @@ exports.logout = async (req, res, next) => {
   res.status(200).json({ status: 'success' });
 };
 
-exports.protect = async (req, res, next) => {
-  try {
-    const token = req.cookies.jwt;
-    const decodedToken = await promisify(jwt.verify)(
-      token,
-      process.env.JWT_SECRET
-    );
+exports.returnUser = async (req, res, next) => {
+  delete req.user.dataValues.id;
+  delete req.user.dataValues.password;
 
-    const user = await User.findByPk(decodedToken.id);
-
-    if (!token || !user) {
-      next(err);
-    }
-
-    req.user = user;
-  } catch (err) {
-    next(err);
-  }
-  next();
+  res.status(200).json({
+    status: 'success',
+    user: req.user,
+  });
 };
