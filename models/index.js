@@ -7,6 +7,7 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/config.js')[env];
 const db = {};
+const AppError = require('../utils/appError');
 
 let sequelize;
 if (config.use_env_variable) {
@@ -19,6 +20,21 @@ if (config.use_env_variable) {
     config
   );
 }
+
+const queryInterface = sequelize.getQueryInterface();
+
+// call once
+const addIndexes = async () => {
+  await queryInterface.addIndex('items', ['name', 'boardId'], {
+    unique: true,
+    errors: {
+      message: 'Item name already exists on board',
+    },
+  });
+  await queryInterface.addIndex('boards', ['name', 'userId'], {
+    unique: true,
+  });
+};
 
 fs.readdirSync(__dirname)
   .filter(file => {

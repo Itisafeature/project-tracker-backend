@@ -42,7 +42,10 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true,
+        unique: {
+          args: 'email',
+          msg: 'Email is already taken',
+        },
         validate: {
           notNull: true,
           isEmail: true,
@@ -58,10 +61,6 @@ module.exports = (sequelize, DataTypes) => {
             msg:
               'Password must be at least at characters long and include 1 uppercase letter, 1 lowercase letter and 1 number',
           },
-        },
-        unique: {
-          args: 'email',
-          msg: 'Email is already taken',
         },
       },
     },

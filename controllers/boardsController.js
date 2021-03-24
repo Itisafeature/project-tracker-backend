@@ -82,7 +82,6 @@ exports.createBoard = async (req, res, next) => {
       board,
     });
   } catch (err) {
-    console.log(err);
     next(err);
   }
 };

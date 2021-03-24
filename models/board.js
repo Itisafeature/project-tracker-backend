@@ -1,5 +1,5 @@
 'use strict';
-const { Model } = require('sequelize');
+const { Model, QueryInterface } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Board extends Model {
     /**
@@ -21,8 +21,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   Board.init(
     {
-      name: DataTypes.STRING,
-      userId: DataTypes.INTEGER,
+      name: {
+        type: DataTypes.STRING,
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+      },
     },
     {
       sequelize,
@@ -44,6 +48,9 @@ module.exports = (sequelize, DataTypes) => {
       'In-Progress': 3,
       Completed: 4,
     };
+
+    if (!board.items) return;
+
     const sortedItems = board.items.sort((item1, item2) => {
       if (item1.status === item2.status) {
         return item1.id - item2.id;
