@@ -1,6 +1,9 @@
 'use strict';
 const { Model } = require('sequelize');
 const bcrypt = require('bcrypt');
+const passwordRegex = require('../utils/passwordRegex');
+
+// Password R
 
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -57,9 +60,9 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notNull: true,
           is: {
-            args: /^[a-zA-Z0-9!@#\$%\^\&*\)\(+=._-]{6,}$/g,
+            args: passwordRegex,
             msg:
-              'Password must be at least at characters long and include 1 uppercase letter, 1 lowercase letter and 1 number',
+              'Password must be at least at characters long and include at least 3 out of the following 4: 1 uppercase letter, 1 lowercase letter, 1 number or non-alphanumeric characters',
           },
         },
       },
