@@ -62,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
           is: {
             args: passwordRegex,
             msg:
-              'Password must be at least at characters long and include at least 3 out of the following 4: 1 uppercase letter, 1 lowercase letter, 1 number or non-alphanumeric characters',
+              'Password must be at least 6 characters long and include at least 3 out of the following 4: 1 uppercase letter, 1 lowercase letter, 1 number or non-alphanumeric characters',
           },
         },
       },

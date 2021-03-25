@@ -30,8 +30,6 @@ module.exports = (err, req, res, next) => {
   let error = { ...err };
   error.message = err.message;
 
-  console.log(err);
-
   if (err.name === 'SequelizeValidationError') {
     error = handleValidationError(err);
   } else if (err.name === 'SequelizeUniqueConstraintError') {

@@ -15,11 +15,11 @@ passport.use(
     },
     async (req, email, password, done) => {
       try {
-        console.log(password);
         const user = await User.create(req.body);
         return done(null, user);
       } catch (err) {
-        done(err);
+        console.log(err);
+        return done(err);
       }
     }
   )
