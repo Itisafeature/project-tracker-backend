@@ -59,11 +59,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         validate: {
           notNull: true,
-          is: {
-            args: passwordRegex,
-            msg:
-              'Password must be at least 6 characters long and include at least 3 out of the following 4: 1 uppercase letter, 1 lowercase letter, 1 number or non-alphanumeric characters',
-          },
         },
       },
     },
@@ -75,6 +70,16 @@ module.exports = (sequelize, DataTypes) => {
 
   User.addScope('defaultScope', {
     attributes: ['id', 'username', 'email', 'password'],
+  });
+
+  User.addHook('beforeValidate', async (user, options) => {
+    if (!user.password.match(passwordRegex)) {
+      return Promise.reject(
+        new Error(
+          'Password must be minimum eight characters, maximum 32 characters,  at least one uppercase letter, one lowercase letter, one number and one special character (@$!%*?&)'
+        )
+      );
+    }
   });
 
   User.addHook('beforeCreate', async (user, options) => {
