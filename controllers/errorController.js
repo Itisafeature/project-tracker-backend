@@ -1,4 +1,5 @@
 const AppError = require('../utils/appError');
+const Board = require('../models').board;
 
 const handleValidationError = err => {
   const errors = Object.values(err.errors).map(el => el.message);
@@ -12,8 +13,16 @@ const handleJsonTokenError = err => {
   return new AppError(message, 401);
 };
 
-const handleUniqueConstraintError = () => {
-  console.log('here');
+const handleUniqueConstraintError = err => {
+  let message;
+  switch (err.errors[0].instance._modelOptions.name.singular) {
+    case 'board':
+      message = 'You already have a board with this name';
+      break;
+    default:
+      message = 'There was an error. Please try again';
+  }
+  return new AppError(message, 403);
 };
 
 const sendError = (err, req, res) => {

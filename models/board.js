@@ -23,6 +23,14 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: {
         type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notNull: true,
+          isAlphanumeric: {
+            args: true,
+            msg: 'Must use only AlphaNumeric characters for Board Name',
+          },
+        },
       },
       userId: {
         type: DataTypes.INTEGER,
